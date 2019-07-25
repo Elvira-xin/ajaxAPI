@@ -124,6 +124,7 @@
 <script src="../static/js/jquery.js"></script>
 <script src="../static/js/ajax.js"></script>
 <script src="../static/js/template-web.js"></script>
+<script src="../static/js/bootstrap.js"></script>
 <script>
   //验证用户是否登录过
   ;(function(){
@@ -160,6 +161,39 @@
       }
     })
 
+
+
+    //实现删除
+    let id;
+    let _this
+    $('#tbody').on('click','a:last-child',function(){
+      id=$(this).attr('data-id');
+      _this=$(this);
+      //跳出弹框
+      $('#modelId').modal();
+    })
+
+    $('.modal-footer>button:last-child').on('click',function(){
+      $('#modelId').modal('hide');
+      $.ajax({
+        url:'http://127.0.0.1:8080/deleteHeroById',
+        data:{id:id},
+        success:function(res){
+          if(res.code===200){
+            console.log(8)
+            $(_this).parents('tr').remove()
+          }
+        }
+      })
+    })
+
+
+
+    //实现修改
+    $('#tbody').on('click','a:first-child',function(){
+      
+    })
+
     
 
   })();
@@ -171,8 +205,8 @@
       <td>{{val.name}}</td>
       <td>{{val.gender}}</td>
       <td><img src="../static/images/{{val.img}}"></td>
-      <td><a href="./edit.html?id=1">修改</a> 
-        <a data-id="1" href="javscript:void(0);">删除</a>
+      <td><a href="./edit.html?id={{val.id}}">修改</a> 
+        <a data-id="{{val.id}}" href="javscript:void(0);">删除</a>
       </td>
     </tr>
   {{/each}}
