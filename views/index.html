@@ -121,6 +121,63 @@
     
 
 </body>
+<script src="../static/js/jquery.js"></script>
+<script src="../static/js/ajax.js"></script>
+<script src="../static/js/template-web.js"></script>
+<script>
+  //验证用户是否登录过
+  ;(function(){
+    let userId=localStorage.getItem('userId');
+    if(!userId){
+      alert('亲，你还没有登录哟');
+      location.href='./login.html';
+    };
+    //发送ajax请求验证用户是否已经登录过
+    $.ajax({
+      url:'http://127.0.0.1:8080/isLogin',
+      data:'id='+userId,
+      success:function(res){
+        console.log(123)
+        if(res.code===200){
+          $('.btn-success').attr('hidden',true);
+          $('.btn-exit').attr('hidden',false);
+          $('.btn-add').attr('hidden',false);
+          $('.table').removeAttr('hidden');
+          //发送ajax请求获取所有英雄数据
+          $.ajax({
+            url:'http://127.0.0.1:8080/getAllHero',
+            type:'post',
+            success:function(res){
+              if(res.code===200){
+                let htm='';
+                html=template('tp',res.data);
+                $('#tbody').html(html);
+              }
+            }
+          })
+          
+        }
+      }
+    })
+
+    
+
+  })();
+</script>
+<script type="text/template" id="tp">
+  {{each $data val}}
+  <tr>
+      <td>{{val.id}}</td>
+      <td>{{val.name}}</td>
+      <td>{{val.gender}}</td>
+      <td><img src="../static/images/{{val.img}}"></td>
+      <td><a href="./edit.html?id=1">修改</a> 
+        <a data-id="1" href="javscript:void(0);">删除</a>
+      </td>
+    </tr>
+  {{/each}}
+
+</script>
 
 
 </html>

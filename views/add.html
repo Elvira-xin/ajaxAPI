@@ -68,6 +68,53 @@
     </div>
 
 </body>
+<script src="../static/js/jquery.js"></script>
+<script src="../static/js/ajax.js"></script>
+<script>
+    $('#sub').on('click',function(){
+        if($('tbody input[type=text]').val().trim().length===0){
+            alert('名字不能为空');
+            return;
+        }
+        //获取表单数据
+        let data=$('form').serialize();
+        //发送ajax请求
+        $.ajax({
+            url:'http://127.0.0.1:8080/addNewHero',
+            type:'post',
+            data:data,
+            success:function(res){
+                if(res.code===200){
+                    alert('新增成功');
+                    location.href='./index.html';
+                }
+            }
+        })
+    })
 
+    //更改头像
+    $('#img').on('change',function(){
+        //获取文件
+        let file=this.files[0];
+        //把图片转换为文件流
+        let fd=new FormData();
+        fd.append('pic',file);
+        $.ajax({
+            url:'http://127.0.0.1:8080/uploadHeadImg',
+            type:'post',
+            data:fd,
+            contentType:false,
+            processData:false,
+            success:function(res){
+                if(res.code===200){
+                    // console.log(12)
+                    $('#photo').attr('src',res.baseDir+res.filePath);
+                    //更改隐藏域的内容
+                    $('#headSrc').val(res.filePath)
+                }
+            }
+        })
+    })
+</script>
 
 </html>
